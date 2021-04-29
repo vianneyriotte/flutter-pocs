@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_pocs/components/effects/effects.dart';
 
 class PageBase extends StatelessWidget {
   static Color defaultStatusBarColor = Colors.blueGrey;
@@ -50,24 +51,30 @@ class PageBase extends StatelessWidget {
           bottom: false,
           child: Container(
             color: Colors.white,
-            child: CustomScrollView(
-              physics: scrollable
-                  ? AlwaysScrollableScrollPhysics()
-                  : NeverScrollableScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom,
-                    ),
-                    child: child,
-                  ),
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).padding.bottom,
+              ),
+              child:
+                  scrollable ? PageBase.scrollableView(context, child) : child,
             ),
           ),
         ),
       ),
+    );
+  }
+
+  static Widget scrollableView(
+    BuildContext context,
+    Widget child,
+  ) {
+    return CustomScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: ShowLeft(child: child),
+        ),
+      ],
     );
   }
 }
