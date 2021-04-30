@@ -2,6 +2,57 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+class FadeIn extends StatefulWidget {
+  final Widget child;
+  final int delay;
+  final AnimationController controller;
+
+  FadeIn({@required this.child, this.delay, this.controller});
+
+  @override
+  _FadeInState createState() => _FadeInState();
+}
+
+class _FadeInState extends State<FadeIn> with TickerProviderStateMixin {
+  AnimationController _animController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animController = this.widget.controller == null
+        ? AnimationController(
+            vsync: this,
+            duration: Duration(milliseconds: this.widget.delay ?? 800),
+          )
+        : this.widget.controller;
+
+    if (widget.delay == null) {
+      _animController.forward();
+    } else {
+      Timer(Duration(milliseconds: widget.delay), () {
+        try {
+          _animController.forward();
+        } catch (_) {}
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (this.widget.controller == null) _animController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      child: widget.child,
+      opacity: _animController,
+    );
+  }
+}
+
 class ShowUp extends StatefulWidget {
   final Widget child;
   final int delay;
